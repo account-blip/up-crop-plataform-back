@@ -11,8 +11,8 @@ import {
   export const ESTADO_TYPE = ['PRE-PODA', 'POST-PODA'] as const;
   export type EstadoType = (typeof ESTADO_TYPE)[number];
   
-  @Entity({ name: 'ejecucion_de_conteo' })
-  export class EjecucionDeConteo {
+  @Entity({ name: 'ejecuciones_de_conteo' })
+  export class EjecucionesDeConteo {
     @PrimaryGeneratedColumn('uuid')
     id: string;
   
@@ -43,4 +43,3 @@ import {
     @UpdateDateColumn()
     updatedAt: Date;
   }
-  

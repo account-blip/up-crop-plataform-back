@@ -57,6 +57,7 @@ export class CampoEspecificoService {
         filterableColumns: {
           nombre: [FilterOperator.ILIKE, FilterOperator.EQ],
         },
+        relations: ['campo'],
       });
     } catch (error) {
       this.logger.error(error.message, error.stack);
@@ -91,8 +92,21 @@ export class CampoEspecificoService {
       if (!campoEspecifico) {
         throw new NotFoundException(`Campo Especifico not found`);
       }
+  
       const updateCampoEspecifico = this.campoEspecificoRepository.merge(campoEspecifico, updateCampoEspecificoDto);
 
+      if(updateCampoEspecificoDto.campoId !== campoEspecifico.campo.id){
+        const campo = await this.campoRepository.findOne({
+          where: { id: updateCampoEspecificoDto.campoId }
+        });
+
+        if (!campo) {
+          throw new NotFoundException(`Campo not found`);
+        }
+
+        updateCampoEspecifico.campo = campo;    
+      }
+      
       const savedCampoEspecifico = await this.campoEspecificoRepository.save(updateCampoEspecifico);
 
       return savedCampoEspecifico;

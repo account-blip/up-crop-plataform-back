@@ -1,29 +1,24 @@
-import { Campo } from 'src/campo/entities/campo.entity';
-import { Cuartel } from 'src/cuarteles/entities/cuartel.entity';
+import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
 import {
     Column,
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
     ManyToOne,
-    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
   } from 'typeorm';
   
-  @Entity({ name: 'campo_especifico' })
-  export class CampoEspecifico {
+  @Entity({ name: 'cuarteles' })
+  export class Cuartel {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column('varchar', { length: 255 })
     nombre: string;
 
-    @ManyToOne(() => Campo, (campo) => campo.campoEspecificos, {onDelete: 'CASCADE'})
-    campo: Campo;
-
-    @OneToMany(() => Cuartel, (cuartel) => cuartel.campoEspecifico, { cascade: true })
-    cuarteles: Cuartel[]
+    @ManyToOne(() => CampoEspecifico, (campoEspecifico) => campoEspecifico.cuarteles, {onDelete: 'CASCADE'})
+    campoEspecifico: CampoEspecifico;
   
     @DeleteDateColumn()
     deletedAt: Date;

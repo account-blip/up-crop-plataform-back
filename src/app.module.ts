@@ -4,9 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppConfig, DatabaseConfig } from './config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { EjecucionDeConteoModule } from './ejecucion-de-conteo/ejecucion-de-conteo.module';
 import { CampoModule } from './campo/campo.module';
 import { CampoEspecificoModule } from './campo-especifico/campo-especifico.module';
+import { EjecucionesDeConteoModule } from './ejecuciones-de-conteo/ejecuciones-de-conteo.module';
+import { CuartelesModule } from './cuarteles/cuarteles.module';
+import { VariedadesModule } from './variedades/variedades.module';
+import { PortainjertosModule } from './portainjertos/portainjertos.module';
 
 @Module({
   imports: [
@@ -24,9 +27,12 @@ import { CampoEspecificoModule } from './campo-especifico/campo-especifico.modul
     }),
     AuthModule,
     UsersModule,
-    EjecucionDeConteoModule,
     CampoModule,
     CampoEspecificoModule,
+    EjecucionesDeConteoModule,
+    CuartelesModule,
+    VariedadesModule,
+    PortainjertosModule,
   ],
   controllers: [],
   providers: [],
