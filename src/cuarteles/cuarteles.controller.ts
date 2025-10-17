@@ -14,9 +14,9 @@ export class CuartelesController {
     return this.cuartelesService.create(createCuarteleDto);
   }
 
-  @Get()
-  findAll(@Paginate() query: PaginateQuery): Promise<Paginated<Cuartel>> {
-    return this.cuartelesService.findAll(query);
+  @Get('user/:userId')
+  findAll(@Paginate() query: PaginateQuery, @Param('userId') userId:string): Promise<Paginated<Cuartel>> {
+    return this.cuartelesService.findAll(query, userId);
   }
   @Get(':id')
   findOne(@Param('id') id: string) {

@@ -1,5 +1,6 @@
 import { Campo } from 'src/campo/entities/campo.entity';
 import { Cuartel } from 'src/cuarteles/entities/cuartel.entity';
+import { EstimacionDeCosecha } from 'src/estimaciones-de-cosecha/entities/estimacion-de-cosecha.entity';
 import {
     Column,
     CreateDateColumn,
@@ -24,6 +25,9 @@ import {
 
     @OneToMany(() => Cuartel, (cuartel) => cuartel.campoEspecifico, { cascade: true })
     cuarteles: Cuartel[]
+
+    @OneToMany(() => EstimacionDeCosecha, (estimacionDeCosecha) => estimacionDeCosecha.campoEspecifico, { cascade: true })
+    estimacionesDeCosecha: EstimacionDeCosecha[];
   
     @DeleteDateColumn()
     deletedAt: Date;

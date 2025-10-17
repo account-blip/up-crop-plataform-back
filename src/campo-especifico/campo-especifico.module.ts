@@ -4,9 +4,10 @@ import { CampoEspecificoController } from './campo-especifico.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CampoEspecifico } from './entities/campo-especifico.entity';
 import { Campo } from 'src/campo/entities/campo.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CampoEspecifico, Campo])],
+  imports: [TypeOrmModule.forFeature([CampoEspecifico, Campo, User])],
   controllers: [CampoEspecificoController],
   providers: [CampoEspecificoService],
 })

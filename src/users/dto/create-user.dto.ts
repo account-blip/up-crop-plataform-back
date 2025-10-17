@@ -37,6 +37,7 @@ import {
     role: UserRole;
 
     @IsString()
+    @IsOptional()
     campoId: string
   }
   

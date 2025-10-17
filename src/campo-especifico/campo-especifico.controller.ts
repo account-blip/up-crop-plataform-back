@@ -15,9 +15,9 @@ export class CampoEspecificoController {
     return this.campoEspecificoService.create(createCampoEspecificoDto);
   }
 
-  @Get()
-  findAll(@Paginate() query: PaginateQuery): Promise<Paginated<CampoEspecifico>> {
-    return this.campoEspecificoService.findAll(query);
+  @Get('user/:userId')
+  findAll(@Paginate() query: PaginateQuery, @Param('userId') userId:string): Promise<Paginated<CampoEspecifico>> {
+    return this.campoEspecificoService.findAll(query, userId);
   }
 
   @Get(':id')

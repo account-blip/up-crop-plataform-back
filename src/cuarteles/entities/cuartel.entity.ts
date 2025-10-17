@@ -1,10 +1,12 @@
 import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
+import { EstimacionDeCosecha } from 'src/estimaciones-de-cosecha/entities/estimacion-de-cosecha.entity';
 import {
     Column,
     CreateDateColumn,
     DeleteDateColumn,
     Entity,
     ManyToOne,
+    OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
   } from 'typeorm';
@@ -20,6 +22,9 @@ import {
     @ManyToOne(() => CampoEspecifico, (campoEspecifico) => campoEspecifico.cuarteles, {onDelete: 'CASCADE'})
     campoEspecifico: CampoEspecifico;
   
+    @OneToMany(() => EstimacionDeCosecha, (estimacionDeCosecha) => estimacionDeCosecha.cuartel, { cascade: true })
+    estimacionesDeCosecha: EstimacionDeCosecha[];
+
     @DeleteDateColumn()
     deletedAt: Date;
   

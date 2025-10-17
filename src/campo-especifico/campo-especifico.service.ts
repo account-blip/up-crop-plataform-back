@@ -11,6 +11,7 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate';
 import { Campo } from 'src/campo/entities/campo.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class CampoEspecificoService {
@@ -21,6 +22,8 @@ export class CampoEspecificoService {
     private readonly campoEspecificoRepository: Repository<CampoEspecifico>,
     @InjectRepository(Campo)
     private readonly campoRepository: Repository<Campo>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
   ) {}
 
   async create(createCampoEspecificoDto: CreateCampoEspecificoDto) {
@@ -47,9 +50,27 @@ export class CampoEspecificoService {
     }
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<CampoEspecifico>> {
+  async findAll(query: PaginateQuery, userId?: string): Promise<Paginated<CampoEspecifico>> {
     try {
-      return await paginate(query, this.campoEspecificoRepository, {
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['campo'],
+      });
+  
+      const qb = this.campoEspecificoRepository
+        .createQueryBuilder('campoEspecifico')
+        .leftJoinAndSelect('campoEspecifico.campo', 'campo');
+  
+      // ✅ Si el usuario NO es admin, aplicar filtro por campo
+      if (user?.role !== 'ADMIN') {
+        if (user?.campo?.id) {
+          qb.where('campo.id = :campoId', { campoId: user.campo.id });
+        } else {
+          qb.where('1 = 0');
+        }
+      }
+  
+      return await paginate(query, qb, {
         sortableColumns: ['id', 'nombre'],
         nullSort: 'last',
         defaultSortBy: [['createdAt', 'DESC']],
@@ -61,8 +82,10 @@ export class CampoEspecificoService {
       });
     } catch (error) {
       this.logger.error(error.message, error.stack);
+      throw error;
     }
   }
+  
 
   async findOne(id: string) {
     try {
@@ -106,7 +129,7 @@ export class CampoEspecificoService {
 
         updateCampoEspecifico.campo = campo;    
       }
-      
+
       const savedCampoEspecifico = await this.campoEspecificoRepository.save(updateCampoEspecifico);
 
       return savedCampoEspecifico;

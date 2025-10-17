@@ -1,4 +1,5 @@
 import { Campo } from 'src/campo/entities/campo.entity';
+import { EstimacionDeCosecha } from 'src/estimaciones-de-cosecha/entities/estimacion-de-cosecha.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,6 +7,7 @@ import {
   Entity,
   Index,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -43,6 +45,9 @@ export class User {
 
   @ManyToOne(() => Campo, (campo) => campo.users, {onDelete: 'CASCADE'})
   campo: Campo;
+
+  @OneToMany(() => EstimacionDeCosecha, (estimacionDeCosecha) => estimacionDeCosecha.user, { cascade: true })
+  estimacionesDeCosecha: EstimacionDeCosecha[];
 
   @DeleteDateColumn()
   deletedAt: Date;

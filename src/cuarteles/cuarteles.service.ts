@@ -6,6 +6,7 @@ import { Cuartel } from './entities/cuartel.entity';
 import { Repository } from 'typeorm';
 import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
 import { FilterOperator, paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { User } from 'src/users/entities/user.entity';
 
 @Injectable()
 export class CuartelesService {
@@ -16,6 +17,8 @@ export class CuartelesService {
     private readonly cuartelRepository: Repository<Cuartel>,
     @InjectRepository(CampoEspecifico)
     private readonly campoEspecificoRepository: Repository<CampoEspecifico>,
+    @InjectRepository(User)
+    private userRepository: Repository<User>,
 
   ) {}
   
@@ -43,9 +46,28 @@ export class CuartelesService {
     }
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<Cuartel>> {
+  async findAll(query: PaginateQuery, userId: string): Promise<Paginated<Cuartel>> {
     try {
-      return await paginate(query, this.cuartelRepository, {
+      const user = await this.userRepository.findOne({
+        where: { id: userId },
+        relations: ['campo'],
+      });
+  
+      const qb = this.cuartelRepository
+        .createQueryBuilder('cuartel')
+        .leftJoinAndSelect('cuartel.campoEspecifico', 'campoEspecifico')
+        .leftJoinAndSelect('campoEspecifico.campo', 'campo');
+  
+      // ✅ Si el usuario NO es admin, filtrar por su campo
+      if (user?.role !== 'ADMIN') {
+        if (user?.campo?.id) {
+          qb.where('campo.id = :campoId', { campoId: user.campo.id });
+        } else {
+          qb.where('1 = 0'); // no devuelve resultados
+        }
+      }
+  
+      return await paginate(query, qb, {
         sortableColumns: ['id', 'nombre'],
         nullSort: 'last',
         defaultSortBy: [['createdAt', 'DESC']],
@@ -53,12 +75,14 @@ export class CuartelesService {
         filterableColumns: {
           nombre: [FilterOperator.ILIKE, FilterOperator.EQ],
         },
-        relations: ['campoEspecifico'],
+        relations: ['campoEspecifico', 'campoEspecifico.campo'],
       });
     } catch (error) {
       this.logger.error(error.message, error.stack);
+      throw error;
     }
   }
+  
 
   async findOne(id: string) {
     try {
@@ -100,7 +124,7 @@ export class CuartelesService {
 
       updateCuartel.campoEspecifico = campoEspecifico;
     }
-    
+
     const savedCuartel = await this.cuartelRepository.save(updateCuartel);
 
     return savedCuartel;
