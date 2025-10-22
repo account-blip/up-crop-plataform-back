@@ -1,20 +1,18 @@
 import { registerAs } from '@nestjs/config';
 import { type TypeOrmModuleOptions } from '@nestjs/typeorm';
 
+const isSupabase = process.env.DATABASE_URL?.includes('supabase.co');
+
 export default registerAs(
   'database',
   () =>
     ({
       type: 'postgres',
-      host: process.env.POSTGRES_HOST || '',
-      port: parseInt(process.env.POSTGRES_PORT as string, 10) || 5432,
-      database: process.env.POSTGRES_NAME || '',
-      username: process.env.POSTGRES_USER || '',
-      password: process.env.POSTGRES_PASSWORD || '',
+      url: process.env.DATABASE_URL,
       entities: [`${__dirname}/../**/*.entity{.ts,.js}`],
       synchronize: true,
-      logging: false,
-      migrations: [`${__dirname}/../../db/migrations/*{.ts,.js}`],
-      migrationsTableName: 'migrations',
+      ssl: {
+        rejectUnauthorized: false, // ✅ obligatorio con Supabase en Vercel
+      },
     }) as TypeOrmModuleOptions,
 );
