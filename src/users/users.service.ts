@@ -49,15 +49,6 @@ export class UsersService {
       }
       const user = this.userRepository.create(createUserDto);
 
-      const empresa = await this.empresaRepository.findOne({
-        where: { id: createUserDto.empresaId }
-      });
-  
-      if (!empresa) {
-        throw new NotFoundException(`Empresa not found`);
-      }
-
-      user.empresa = empresa;
 
       if (createUserDto.password) {
         const hashedPassword = bcrypt.hashSync(createUserDto.password, 10);
