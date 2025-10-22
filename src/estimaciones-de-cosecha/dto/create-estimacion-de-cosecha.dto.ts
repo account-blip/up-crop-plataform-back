@@ -32,7 +32,7 @@ export class CreateEstimacionDeCosechaDto {
 
     @IsString()
     @IsNotEmpty()
-    campoEspecificoId: string
+    unidadesProductivaId: string
 
     @IsString()
     @IsNotEmpty()

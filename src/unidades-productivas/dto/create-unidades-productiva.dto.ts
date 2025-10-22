@@ -1,6 +1,7 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
-export class CreateCampoEspecificoDto {
+
+export class CreateUnidadesProductivaDto {
 
     @IsString()
     @IsNotEmpty()
@@ -8,5 +9,5 @@ export class CreateCampoEspecificoDto {
 
     @IsString()
     @IsNotEmpty()
-    campoId: string
+    empresaId: string
 }

@@ -5,11 +5,11 @@ import { EstimacionDeCosecha } from './entities/estimacion-de-cosecha.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from 'src/users/entities/user.entity';
-import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
 import { Cuartel } from 'src/cuarteles/entities/cuartel.entity';
 import { Portainjerto } from 'src/portainjertos/entities/portainjerto.entity';
 import { Variedad } from 'src/variedades/entities/variedad.entity';
 import { FilterOperator, paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
+import { UnidadesProductiva } from 'src/unidades-productivas/entities/unidades-productiva.entity';
 
 @Injectable()
 export class EstimacionesDeCosechaService {
@@ -20,8 +20,8 @@ export class EstimacionesDeCosechaService {
     private estimacionDeCosechaRepository: Repository<EstimacionDeCosecha>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    @InjectRepository(CampoEspecifico)
-    private campoEspecificoRepository: Repository<CampoEspecifico>,
+    @InjectRepository(UnidadesProductiva)
+    private unidadesProductivaRepository: Repository<UnidadesProductiva>,
     @InjectRepository(Cuartel)
     private cuartelRepository: Repository<Cuartel>,
     @InjectRepository(Portainjerto)
@@ -44,15 +44,15 @@ export class EstimacionesDeCosechaService {
 
       ejecucionesDeConteo.user = user;
 
-      const campoEspecifico = await this.campoEspecificoRepository.findOne({
-        where: { id: createEstimacionDeCosechaDto.campoEspecificoId }
+      const unidadesProductiva = await this.unidadesProductivaRepository.findOne({
+        where: { id: createEstimacionDeCosechaDto.unidadesProductivaId }
       });
 
-      if (!campoEspecifico) {
-        throw new NotFoundException(`Campo Especifico not found`);
+      if (!unidadesProductiva) {
+        throw new NotFoundException(`Unidad productiva not found`);
       }
 
-      ejecucionesDeConteo.campoEspecifico = campoEspecifico;
+      ejecucionesDeConteo.unidadesProductiva = unidadesProductiva;
 
       const cuartel = await this.cuartelRepository.findOne({
         where: { id: createEstimacionDeCosechaDto.cuartelId }
@@ -96,7 +96,7 @@ export class EstimacionesDeCosechaService {
     try {
       const user = await this.userRepository.findOne({
         where: { id: userId },
-        relations: ['campo'],
+        relations: ['empresa'],
       });
   
       const qb = this.estimacionDeCosechaRepository
@@ -109,8 +109,8 @@ export class EstimacionesDeCosechaService {
         .leftJoinAndSelect('campoEspecifico.campo', 'campo');
   
       if (user?.role !== 'ADMIN') {
-        if (user?.campo?.id) {
-          qb.where('campo.id = :campoId', { campoId: user.campo.id });
+        if (user?.empresa?.id) {
+          qb.where('campo.id = :campoId', { campoId: user.empresa.id });
         } else {
           qb.where('1 = 0');
         }
@@ -164,14 +164,14 @@ export class EstimacionesDeCosechaService {
         updatedEjecucionesDeConteo.user = user;
       }
 
-      if(updateEstimacionDeCosechaDto.campoEspecificoId !== ejecucionesDeConteo.campoEspecifico.id){
-        const campoEspecifico = await this.campoEspecificoRepository.findOne({
-          where: { id: updateEstimacionDeCosechaDto.campoEspecificoId }
+      if(updateEstimacionDeCosechaDto.unidadesProductivaId !== ejecucionesDeConteo.unidadesProductiva.id){
+        const unidadesProductiva = await this.unidadesProductivaRepository.findOne({
+          where: { id: updateEstimacionDeCosechaDto.unidadesProductivaId }
         });
-        if (!campoEspecifico) {
-          throw new NotFoundException(`Campo Especifico not found`);
+        if (!unidadesProductiva) {
+          throw new NotFoundException(`Unidades productiva not found`);
         }
-        updatedEjecucionesDeConteo.campoEspecifico = campoEspecifico;
+        updatedEjecucionesDeConteo.unidadesProductiva = unidadesProductiva;
       }
 
       if(updateEstimacionDeCosechaDto.cuartelId !== ejecucionesDeConteo.cuartel.id){

@@ -38,6 +38,6 @@ import {
 
     @IsString()
     @IsOptional()
-    campoId: string
+    empresaId: string
   }
   

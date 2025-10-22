@@ -4,9 +4,9 @@ import { UpdateCuarteleDto } from './dto/update-cuartele.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Cuartel } from './entities/cuartel.entity';
 import { Repository } from 'typeorm';
-import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
 import { FilterOperator, paginate, Paginated, PaginateQuery } from 'nestjs-paginate';
 import { User } from 'src/users/entities/user.entity';
+import { UnidadesProductiva } from 'src/unidades-productivas/entities/unidades-productiva.entity';
 
 @Injectable()
 export class CuartelesService {
@@ -15,8 +15,8 @@ export class CuartelesService {
   constructor(
     @InjectRepository(Cuartel)
     private readonly cuartelRepository: Repository<Cuartel>,
-    @InjectRepository(CampoEspecifico)
-    private readonly campoEspecificoRepository: Repository<CampoEspecifico>,
+    @InjectRepository(UnidadesProductiva)
+    private readonly unidadesProductivaRepository: Repository<UnidadesProductiva>,
     @InjectRepository(User)
     private userRepository: Repository<User>,
 
@@ -27,15 +27,15 @@ export class CuartelesService {
 
       const cuartel = this.cuartelRepository.create(createCuarteleDto);
 
-      const campoEspecifico = await this.campoEspecificoRepository.findOne({
-        where: { id: createCuarteleDto.campoEspecificoId }
+      const unidadesProductiva = await this.unidadesProductivaRepository.findOne({
+        where: { id: createCuarteleDto.unidadProductivaId }
       });
   
-      if (!campoEspecifico) {
-        throw new NotFoundException(`Campo not found`);
+      if (!unidadesProductiva) {
+        throw new NotFoundException(`Unidad productiva not found`);
       }
 
-      cuartel.campoEspecifico = campoEspecifico;
+      cuartel.unidadesProductiva = unidadesProductiva;
 
       const savedCuartel = await this.cuartelRepository.save(cuartel);
 
@@ -50,18 +50,18 @@ export class CuartelesService {
     try {
       const user = await this.userRepository.findOne({
         where: { id: userId },
-        relations: ['campo'],
+        relations: ['empresa'],
       });
   
       const qb = this.cuartelRepository
         .createQueryBuilder('cuartel')
-        .leftJoinAndSelect('cuartel.campoEspecifico', 'campoEspecifico')
-        .leftJoinAndSelect('campoEspecifico.campo', 'campo');
+        .leftJoinAndSelect('cuartel.unidadesProductiva', 'unidadesProductiva')
+        .leftJoinAndSelect('unidadesProductiva.empresa', 'empresa');
   
       // ✅ Si el usuario NO es admin, filtrar por su campo
-      if (user?.role !== 'ADMIN') {
-        if (user?.campo?.id) {
-          qb.where('campo.id = :campoId', { campoId: user.campo.id });
+      if (user?.role !== 'SUPERADMIN') {
+        if (user?.empresa?.id) {
+          qb.where('empresa.id = :empresaId', { empresaId: user.empresa.id });
         } else {
           qb.where('1 = 0'); // no devuelve resultados
         }
@@ -75,7 +75,7 @@ export class CuartelesService {
         filterableColumns: {
           nombre: [FilterOperator.ILIKE, FilterOperator.EQ],
         },
-        relations: ['campoEspecifico', 'campoEspecifico.campo'],
+        relations: ['unidadesProductiva', 'unidadesProductiva.empresa'],
       });
     } catch (error) {
       this.logger.error(error.message, error.stack);
@@ -113,16 +113,16 @@ export class CuartelesService {
     }
     const updateCuartel = this.cuartelRepository.merge(cuartel, updateCuarteleDto);
 
-    if(updateCuarteleDto.campoEspecificoId !== cuartel.campoEspecifico.id){
-      const campoEspecifico = await this.campoEspecificoRepository.findOne({
-        where: { id: updateCuarteleDto.campoEspecificoId }
+    if(updateCuarteleDto.unidadProductivaId !== cuartel.unidadesProductiva.id){
+      const unidadesProductiva = await this.unidadesProductivaRepository.findOne({
+        where: { id: updateCuarteleDto.unidadProductivaId }
       });
 
-      if (!campoEspecifico) {
-        throw new NotFoundException(`Campo Especifico not found`);
+      if (!unidadesProductiva) {
+        throw new NotFoundException(`Unidad productiva not found`);
       }
 
-      updateCuartel.campoEspecifico = campoEspecifico;
+      updateCuartel.unidadesProductiva = unidadesProductiva;
     }
 
     const savedCuartel = await this.cuartelRepository.save(updateCuartel);

@@ -8,5 +8,5 @@ export class CreateCuarteleDto {
 
     @IsString()
     @IsNotEmpty()
-    campoEspecificoId: string 
+    unidadProductivaId: string 
 }

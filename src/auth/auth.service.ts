@@ -49,11 +49,11 @@ export class AuthService {
           emailVerified: true,
           password: true,
           role: true,
-          campo:true,
+          empresa:true,
           createdAt: true,
           updatedAt: true,
         },
-        relations:['campo']
+        relations:['empresa']
       });
 
       if (!user) {

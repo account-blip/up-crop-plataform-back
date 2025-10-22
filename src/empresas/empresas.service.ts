@@ -1,8 +1,8 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { CreateCampoDto } from './dto/create-campo.dto';
-import { UpdateCampoDto } from './dto/update-campo.dto';
+import { CreateEmpresaDto } from './dto/create-empresa.dto';
+import { UpdateEmpresaDto } from './dto/update-empresa.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Campo } from './entities/campo.entity';
+import { Empresa } from './entities/empresa.entity';
 import { Repository } from 'typeorm';
 import {
   FilterOperator,
@@ -12,20 +12,20 @@ import {
 } from 'nestjs-paginate';
 
 @Injectable()
-export class CampoService {
-  private readonly logger = new Logger(CampoService.name);
+export class EmpresaService {
+  private readonly logger = new Logger(EmpresaService.name);
 
   constructor(
-    @InjectRepository(Campo)
-    private readonly campoRepository: Repository<Campo>,
+    @InjectRepository(Empresa)
+    private readonly empresaRepository: Repository<Empresa>,
   ) {}
 
-  async create(createCampoDto: CreateCampoDto) {
+  async create(createEmpresaDto: CreateEmpresaDto) {
     try{
 
-      const campo = this.campoRepository.create(createCampoDto);
+      const campo = this.empresaRepository.create(createEmpresaDto);
 
-      const savedCampo = await this.campoRepository.save(campo);
+      const savedCampo = await this.empresaRepository.save(campo);
 
       return savedCampo;
 
@@ -34,9 +34,9 @@ export class CampoService {
     }
   }
 
-  async findAll(query: PaginateQuery): Promise<Paginated<Campo>> {
+  async findAll(query: PaginateQuery): Promise<Paginated<Empresa>> {
     try {
-      return await paginate(query, this.campoRepository, {
+      return await paginate(query, this.empresaRepository, {
         sortableColumns: ['id', 'nombre'],
         nullSort: 'last',
         defaultSortBy: [['createdAt', 'DESC']],
@@ -44,6 +44,7 @@ export class CampoService {
         filterableColumns: {
           nombre: [FilterOperator.ILIKE, FilterOperator.EQ],
         },
+        relations:['unidadesProductiva', 'unidadesProductiva.cuarteles']
       });
     } catch (error) {
       this.logger.error(error.message, error.stack);
@@ -52,12 +53,12 @@ export class CampoService {
 
   async findOne(id: string) {
     try {
-      const campo = await this.campoRepository.findOne({
+      const campo = await this.empresaRepository.findOne({
         where: { id }
       });
   
       if (!campo) {
-        throw new NotFoundException(`Campo not found`);
+        throw new NotFoundException(`Empresa not found`);
       }
   
       return campo;
@@ -69,18 +70,18 @@ export class CampoService {
     }
   }
 
-  async update(id: string, updateCampoDto: UpdateCampoDto) {
+  async update(id: string, updateEmpresaDto: UpdateEmpresaDto) {
     try {
-      const campo = await this.campoRepository.findOne({
+      const campo = await this.empresaRepository.findOne({
         where: { id }
       });
   
       if (!campo) {
-        throw new NotFoundException(`Campo not found`);
+        throw new NotFoundException(`Empresa not found`);
       }
-      const updateCampo = this.campoRepository.merge(campo, updateCampoDto);
+      const updateCampo = this.empresaRepository.merge(campo, updateEmpresaDto);
 
-      const savedCampo = await this.campoRepository.save(updateCampo);
+      const savedCampo = await this.empresaRepository.save(updateCampo);
 
       return savedCampo
     } catch (error) {
@@ -93,17 +94,17 @@ export class CampoService {
 
   async remove(id: string) {
     try{
-      const campo = await this.campoRepository.findOne({
+      const campo = await this.empresaRepository.findOne({
         where: { id }
       });
   
       if (!campo) {
-        throw new NotFoundException(`Campo not found`);
+        throw new NotFoundException(`Empresa not found`);
       }
 
-      await this.campoRepository.remove(campo);
+      await this.empresaRepository.remove(campo);
 
-      return {message: 'Campo removed successfully'}
+      return {message: 'Empresa removed successfully'}
     } catch (error) {
       if (!(error instanceof NotFoundException)) {
         this.logger.error(error.message, error.stack);

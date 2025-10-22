@@ -18,7 +18,7 @@ import {
   PaginateQuery,
 } from 'nestjs-paginate';
 import { UpdatePasswordDto } from './dto/update-password.dto';
-import { Campo } from 'src/campo/entities/campo.entity';
+import { Empresa } from 'src/empresas/entities/empresa.entity';
 @Injectable()
 export class UsersService {
   private readonly logger = new Logger(UsersService.name);
@@ -26,8 +26,8 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Campo)
-    private readonly campoRepository: Repository<Campo>,
+    @InjectRepository(Empresa)
+    private readonly empresaRepository: Repository<Empresa>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
@@ -49,15 +49,15 @@ export class UsersService {
       }
       const user = this.userRepository.create(createUserDto);
 
-      const campo = await this.campoRepository.findOne({
-        where: { id: createUserDto.campoId }
+      const empresa = await this.empresaRepository.findOne({
+        where: { id: createUserDto.empresaId }
       });
   
-      if (!campo) {
-        throw new NotFoundException(`Campo not found`);
+      if (!empresa) {
+        throw new NotFoundException(`Empresa not found`);
       }
 
-      user.campo = campo;
+      user.empresa = empresa;
 
       if (createUserDto.password) {
         const hashedPassword = bcrypt.hashSync(createUserDto.password, 10);

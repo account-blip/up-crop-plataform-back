@@ -4,12 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppConfig, DatabaseConfig } from './config';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
-import { CampoModule } from './campo/campo.module';
-import { CampoEspecificoModule } from './campo-especifico/campo-especifico.module';
+import { EmpresaModule } from './empresas/empresas.module';
 import { EstimacionesDeCosechaModule } from './estimaciones-de-cosecha/estimaciones-de-cosecha.module';
 import { CuartelesModule } from './cuarteles/cuarteles.module';
 import { VariedadesModule } from './variedades/variedades.module';
 import { PortainjertosModule } from './portainjertos/portainjertos.module';
+import { UnidadesProductivasModule } from './unidades-productivas/unidades-productivas.module';
 
 @Module({
   imports: [
@@ -27,12 +27,13 @@ import { PortainjertosModule } from './portainjertos/portainjertos.module';
     }),
     AuthModule,
     UsersModule,
-    CampoModule,
-    CampoEspecificoModule,
+    EmpresaModule,
+    UnidadesProductivasModule,
     EstimacionesDeCosechaModule,
     CuartelesModule,
     VariedadesModule,
     PortainjertosModule,
+    UnidadesProductivasModule,
   ],
   controllers: [],
   providers: [],

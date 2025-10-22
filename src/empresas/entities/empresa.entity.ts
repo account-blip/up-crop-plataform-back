@@ -1,4 +1,4 @@
-import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
+import { UnidadesProductiva } from 'src/unidades-productivas/entities/unidades-productiva.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
     Column,
@@ -10,19 +10,19 @@ import {
     UpdateDateColumn,
   } from 'typeorm';
   
-  @Entity({ name: 'campo' })
-  export class Campo {
+  @Entity({ name: 'empresa' })
+  export class Empresa {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
     @Column('varchar', { length: 255 })
     nombre: string;
 
-    @OneToMany(() => User, (user) => user.campo, { cascade: true })
+    @OneToMany(() => User, (user) => user.empresa, { cascade: true })
     users: User[]
 
-    @OneToMany(() => CampoEspecifico, (campoEspecifico) => campoEspecifico.campo, { cascade: true })
-    campoEspecificos: CampoEspecifico[]
+    @OneToMany(() => UnidadesProductiva, (unidadesProductiva) => unidadesProductiva.empresa, { cascade: true })
+    unidadesProductiva: UnidadesProductiva[]
   
     @DeleteDateColumn()
     deletedAt: Date;

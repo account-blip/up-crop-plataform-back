@@ -1,6 +1,6 @@
-import { CampoEspecifico } from 'src/campo-especifico/entities/campo-especifico.entity';
 import { Cuartel } from 'src/cuarteles/entities/cuartel.entity';
 import { Portainjerto } from 'src/portainjertos/entities/portainjerto.entity';
+import { UnidadesProductiva } from 'src/unidades-productivas/entities/unidades-productiva.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Variedad } from 'src/variedades/entities/variedad.entity';
 import {
@@ -43,8 +43,8 @@ import {
     @ManyToOne(() => User, (user) => user.estimacionesDeCosecha, {onDelete: 'CASCADE'})
     user: User;
 
-    @ManyToOne(() => CampoEspecifico, (campoEspecifico) => campoEspecifico.estimacionesDeCosecha, {onDelete: 'CASCADE'})
-    campoEspecifico: CampoEspecifico;
+    @ManyToOne(() => UnidadesProductiva, (unidadesProductiva) => unidadesProductiva.estimacionesDeCosecha, {onDelete: 'CASCADE'})
+    unidadesProductiva: UnidadesProductiva;
 
     @ManyToOne(() => Cuartel, (cuartel) => cuartel.estimacionesDeCosecha, {onDelete: 'CASCADE'})
     cuartel: Cuartel;
