@@ -81,8 +81,7 @@ export class UsersService {
   async findOne(id: string) {
     try {
       const user = await this.userRepository.findOne({
-        where: { id },
-        relations:['campo']
+        where: { id }
       });
 
       if (!user) {

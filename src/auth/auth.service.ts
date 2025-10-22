@@ -11,7 +11,6 @@ import { Repository } from 'typeorm';
 import { LoginUserDto } from './dto/login-user';
 import { CreatePasswordResetTokenDto } from './dto/create-password-reset-token.dto';
 import { CreateVerificationTokenDto } from './dto/create-verification-token.dto';
-import { UsersService } from 'src/users/users.service';
 import { VerificationToken } from './entities/verification-token.entity';
 import { PasswordResetToken } from './entities/password-reset-token.entity';
 
@@ -49,7 +48,6 @@ export class AuthService {
           emailVerified: true,
           password: true,
           role: true,
-          empresa:true,
           createdAt: true,
           updatedAt: true,
         },
