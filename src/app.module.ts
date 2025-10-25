@@ -10,6 +10,7 @@ import { CuartelesModule } from './cuarteles/cuarteles.module';
 import { VariedadesModule } from './variedades/variedades.module';
 import { PortainjertosModule } from './portainjertos/portainjertos.module';
 import { UnidadesProductivasModule } from './unidades-productivas/unidades-productivas.module';
+import { AnalisisDeCalidadModule } from './analisis-de-calidad/analisis-de-calidad.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { UnidadesProductivasModule } from './unidades-productivas/unidades-produ
     VariedadesModule,
     PortainjertosModule,
     UnidadesProductivasModule,
+    AnalisisDeCalidadModule
   ],
   controllers: [],
   providers: [],
